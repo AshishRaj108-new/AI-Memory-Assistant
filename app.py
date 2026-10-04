@@ -52,8 +52,11 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    st.error("GEMINI_API_KEY not found")
-    st.stop()
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except:
+        st.error("GEMINI_API_KEY not found")
+        st.stop()
 
 client = genai.Client(api_key=api_key)
 
