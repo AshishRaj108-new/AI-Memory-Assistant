@@ -1,0 +1,471 @@
+/* =====================================================
+   AI MEMORY ASSISTANT — PREMIUM DARK THEME (Streamlit)
+   ===================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap");
+
+/* ---------- DESIGN TOKENS ---------- */
+
+:root{
+    --bg-base: #080c18;
+    --bg-raised: #0d1222;
+    --surface: rgba(255,255,255,0.04);
+    --surface-strong: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+
+    --text: #e9edf7;
+    --text-muted: #8c97ae;
+
+    --violet: #8b5cf6;
+    --blue: #3b82f6;
+    --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+    --accent-glow: rgba(124,92,246,0.35);
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+
+    --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-display: "Sora", "Manrope", system-ui, sans-serif;
+}
+
+/* ---------- MAIN APP ---------- */
+
+.stApp{
+    background:
+        radial-gradient(900px 500px at 8% -10%, rgba(139,92,246,0.16), transparent 60%),
+        radial-gradient(800px 500px at 100% 105%, rgba(59,130,246,0.14), transparent 60%),
+        linear-gradient(160deg, #080c18 0%, #0b1020 55%, #0f1528 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+}
+
+/* NOTE: no "span" here on purpose. Streamlit icons are spans with an icon font. */
+.stApp p, .stApp li, .stApp label{
+    font-family: var(--font-body);
+}
+
+/* keep icon fonts safe */
+[data-testid="stIconMaterial"],
+.material-icons,
+.material-symbols-rounded{
+    font-family: "Material Symbols Rounded", "Material Icons" !important;
+}
+
+/* transparent top bar, but keep the sidebar toggle usable */
+[data-testid="stHeader"]{
+    background: transparent;
+}
+
+#MainMenu, footer{
+    visibility: hidden;
+}
+
+/* ---------- CONTENT WIDTH (comfortable reading line) ---------- */
+
+.block-container{
+    max-width: 820px;
+    padding-top: 1.5rem;
+    padding-bottom: 7rem;
+}
+
+/* ---------- TITLE ---------- */
+
+.chat-title{
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 38px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--text);
+    margin: 0.5rem 0 0.35rem;
+}
+
+.chat-subtitle{
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+}
+
+h1, h2, h3{
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+    color: var(--text);
+}
+
+/* ---------- SIDEBAR ---------- */
+
+[data-testid="stSidebar"]{
+    background: linear-gradient(180deg, #0a0f1d 0%, #070b15 100%);
+    border-right: 1px solid var(--border);
+}
+
+[data-testid="stSidebarContent"]{
+    padding-top: 1.25rem;
+}
+
+[data-testid="stSidebar"] hr{
+    border-color: var(--border);
+}
+
+/* small buttons inside sidebar columns (the ✕ delete buttons) */
+[data-testid="stSidebar"] [data-testid="stHorizontalBlock"] .stButton button{
+    padding: 6px 0;
+    min-height: 0;
+}
+
+/* metrics sit side by side in the sidebar, so keep them compact */
+[data-testid="stSidebar"] [data-testid="stMetric"]{
+    padding: 10px 12px;
+}
+
+[data-testid="stSidebar"] [data-testid="stMetricValue"]{
+    font-size: 24px;
+}
+
+/* ---------- CHAT MESSAGES ---------- */
+
+[data-testid="stChatMessage"]{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+
+/* app.py puts an invisible <span class="role-user|role-assistant"> in every
+   message. Hide its wrapper so it takes no space. */
+[data-testid="stChatMessage"] [data-testid="stElementContainer"]:has(.role-user, .role-assistant),
+[data-testid="stChatMessage"] [data-testid="element-container"]:has(.role-user, .role-assistant){
+    display: none;
+}
+
+/* user messages: tinted with the accent */
+[data-testid="stChatMessage"]:has(.role-user){
+    background: linear-gradient(135deg, rgba(139,92,246,0.14), rgba(59,130,246,0.10));
+    border-color: rgba(139,92,246,0.28);
+}
+
+/* assistant messages: slim accent edge */
+[data-testid="stChatMessage"]:has(.role-assistant){
+    border-left: 2px solid var(--violet);
+}
+
+[data-testid="stChatMessage"] p{
+    line-height: 1.7;
+    font-size: 15.5px;
+    margin-bottom: 0.6rem;
+}
+
+[data-testid="stChatMessage"] p:last-child{
+    margin-bottom: 0;
+}
+
+/* avatars (default AND custom images/emoji) */
+[data-testid^="stChatMessageAvatar"]{
+    border-radius: 12px;
+    border: 1px solid var(--border-strong);
+}
+
+[data-testid="stChatMessage"]:has(.role-assistant) [data-testid^="stChatMessageAvatar"]{
+    background: var(--accent-gradient);
+    box-shadow: 0 0 18px var(--accent-glow);
+}
+
+[data-testid="stChatMessage"]:has(.role-user) [data-testid^="stChatMessageAvatar"]{
+    background: #1a2236;
+}
+
+/* ---------- CHAT INPUT (the signature element) ---------- */
+
+[data-testid="stBottom"],
+[data-testid="stBottom"] > div{
+    background: transparent;
+}
+
+[data-testid="stBottomBlockContainer"]{
+    max-width: 820px;
+    padding-bottom: 1.5rem;
+}
+
+[data-testid="stChatInput"]{
+    background: rgba(13,18,34,0.85);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+[data-testid="stChatInput"]:focus-within{
+    border-color: rgba(139,92,246,0.7);
+    box-shadow:
+        0 0 0 3px rgba(139,92,246,0.18),
+        0 12px 40px rgba(0,0,0,0.45),
+        0 0 36px var(--accent-glow);
+}
+
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] textarea{
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+[data-testid="stChatInput"] textarea{
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15.5px;
+}
+
+[data-testid="stChatInput"] textarea::placeholder{
+    color: var(--text-muted);
+}
+
+[data-testid="stChatInputSubmitButton"]{
+    background: var(--accent-gradient);
+    color: #fff;
+    border-radius: 14px;
+    border: none;
+}
+
+[data-testid="stChatInputSubmitButton"]:hover{
+    filter: brightness(1.12);
+}
+
+/* ---------- BUTTONS ---------- */
+
+.stButton button,
+.stDownloadButton button{
+    width: 100%;
+    min-height: 42px;
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: normal;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, background 0.18s ease;
+}
+
+/* primary action = gradient */
+[data-testid="stBaseButton-primary"],
+button[kind="primary"]{
+    background: var(--accent-gradient);
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+}
+
+[data-testid="stBaseButton-primary"]:hover,
+button[kind="primary"]:hover{
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+    box-shadow: 0 10px 28px rgba(99,102,241,0.45);
+}
+
+/* secondary action = quiet glass, so the gradient stays special */
+[data-testid="stBaseButton-secondary"],
+button[kind="secondary"]{
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+}
+
+[data-testid="stBaseButton-secondary"]:hover,
+button[kind="secondary"]:hover{
+    background: var(--surface-strong);
+    border-color: rgba(139,92,246,0.55);
+    color: #fff;
+}
+
+.stButton button:active{
+    transform: translateY(0) scale(0.99);
+}
+
+/* ---------- TEXT INPUTS ---------- */
+
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input{
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus,
+.stNumberInput input:focus{
+    border-color: rgba(139,92,246,0.7);
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.18);
+}
+
+/* ---------- SELECT BOX ---------- */
+
+div[data-baseweb="select"] > div{
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+div[data-baseweb="select"] > div:hover{
+    border-color: var(--border-strong);
+}
+
+div[data-baseweb="popover"] ul{
+    background: #0f1528;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+}
+
+/* ---------- METRICS ---------- */
+
+[data-testid="stMetric"]{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+}
+
+[data-testid="stMetricLabel"]{
+    color: var(--text-muted);
+}
+
+[data-testid="stMetricValue"]{
+    font-family: var(--font-display);
+    font-weight: 600;
+}
+
+/* ---------- FILE UPLOADER ---------- */
+
+[data-testid="stFileUploader"] section{
+    background: var(--surface);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 14px;
+}
+
+[data-testid="stFileUploader"] section:hover{
+    border-color: rgba(139,92,246,0.6);
+    background: var(--surface-strong);
+}
+
+/* ---------- EXPANDERS, TABS, STATUS ---------- */
+
+[data-testid="stExpander"]{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+[data-baseweb="tab-list"]{
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+}
+
+[data-baseweb="tab-highlight"]{
+    background: var(--accent-gradient);
+}
+
+[data-testid="stStatus"]{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+[data-testid="stAlert"]{
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+/* ---------- CODE ---------- */
+
+pre, code{
+    font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, Consolas, monospace;
+}
+
+[data-testid="stCode"], .stCodeBlock pre{
+    background: #060912;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+:not(pre) > code{
+    background: rgba(139,92,246,0.14);
+    color: #c9b8ff;
+    border-radius: 6px;
+    padding: 2px 6px;
+}
+
+/* ---------- SCROLLBAR ---------- */
+
+::-webkit-scrollbar{
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background: rgba(139,92,246,0.5);
+    background-clip: padding-box;
+}
+
+/* ---------- SELECTION & FOCUS ---------- */
+
+::selection{
+    background: rgba(139,92,246,0.45);
+    color: #fff;
+}
+
+:focus-visible{
+    outline: 2px solid rgba(139,92,246,0.8);
+    outline-offset: 2px;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 640px){
+    .block-container{
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 6rem;
+    }
+
+    .chat-title{
+        font-size: 28px;
+    }
+
+    [data-testid="stChatMessage"]{
+        padding: 12px 14px;
+        border-radius: 16px;
+    }
+}
+
+/* ---------- REDUCED MOTION ---------- */
+
+@media (prefers-reduced-motion: reduce){
+    *{
+        transition: none !important;
+        animation: none !important;
+    }
+}
